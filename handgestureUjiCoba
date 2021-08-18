@@ -1,0 +1,30 @@
+import cv2
+import mediapipe as mp
+import time
+import handTrackingModule as htm
+
+# Variable
+
+currentTime = 0
+prevoiusTime = 0
+cam = cv2.VideoCapture(0)
+
+# nyoba dalam 1 file
+detector = htm.HandDetector()
+
+while True:
+    success, webcam = cam.read()
+    webcam = detector.findHands(webcam)
+    lmList = detector.findHandPosition(webcam)
+    if len(lmList) != 0:
+        print(lmList[4])
+
+    # Frame Per Second
+    currentTime = time.time()
+    fps = 1 / (currentTime - prevoiusTime)
+    prevoiusTime = currentTime
+    cv2.putText(webcam, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 255), 3)
+
+    # show the webcam
+    cv2.imshow("camera", webcam)
+    cv2.waitKey(1)
